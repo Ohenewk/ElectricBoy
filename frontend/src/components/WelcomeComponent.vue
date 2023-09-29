@@ -2,7 +2,7 @@
   <div class="h-100 d-flex justify-content-between align-items-center">
     <div class="col-auto col-md-3 bg-dark p-5">
       <div class="d-flex flex-column align-items-center align-items-md-center text-white min-vh-100">
-        <div class="m-2">
+
           <h3>Pick a brand:</h3>
           <div class="btn-group">
             <button class="btn btn-secondary btn-md dropdown-toggle" id="_button" type="button" data-bs-toggle="dropdown"
