@@ -2,10 +2,10 @@
   <nav class="navbar navbar-expand-lg sticky-lg-top bg-primary-subtle" :class="{'fixed-top': navbarAtPageTop}"
        data-bs-theme="dark">
     <div class="container-fluid">
-      <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="nav-link" aria-current="page" to="/Home">Home</router-link>
+            <router-link class="nav-link" aria-current="page" to="/home">Home</router-link>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -13,7 +13,7 @@
             </a>
             <ul class="dropdown-menu">
               <li class="dropend">
-                <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Overviews</a>
+                <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" >Overviews</a>
                 <ul class="dropdown-menu">
                   <li>
                     <router-link class="dropdown-item" to="/scooters/Overview31">Scooters Overview (31)</router-link>
@@ -75,5 +75,14 @@ export default {
 </script>
 
 <style scoped>
-
+/* Add your custom highlighted style here */
+.nav-item.active {
+  background-color: #007bff; /* Highlighted background color */
+  color: #fff; /* Text color on highlight */
+}
+.dropdown:hover > .dropdown-menu {
+  display: block;
+  margin-top: 0;
+  cursor: pointer;
+}
 </style>

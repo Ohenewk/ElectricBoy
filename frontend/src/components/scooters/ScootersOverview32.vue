@@ -26,7 +26,7 @@
 
 <script>
 import {Scooter} from "@/models/scooter";
-import ScootersDetail32 from "@/components/ScootersDetail32";
+import ScootersDetail32 from "@/components/scooters/ScootersDetail32";
 
 
 export default {

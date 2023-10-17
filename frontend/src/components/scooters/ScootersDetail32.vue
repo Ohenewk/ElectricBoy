@@ -29,7 +29,7 @@
           <input type="number" class="form-control" id="batteryCharge" v-model="selectedScooter.batteryCharge"/>
         </div>
       </form>
-      <button class="btn btn-danger mt-3" @click="deleteScooter">Delete</button>
+      <button class="btn btn-danger mt-3" type="button" @click="onDelete">Delete</button>
     </div>
     <div v-else>
       <p>Select a scooter to view details.</p>
@@ -38,26 +38,19 @@
 </template>
 
 <script>
+
 export default {
   name: "ScootersDetail32",
-  props: {
-    scooter: Object,
-  },
-  computed: {
-    selectedScooter: {
-      get() {
-        return this.scooter;
-      },
-      set(newScooter) {
-        this.$emit('update-scooter', newScooter);
-      },
-    },
-  },
+  props: [
+    "selectedScooter"
+  ],
+  emits: [
+    "delete-scooter"
+  ],
   methods: {
-    deleteScooter() {
-      // Emit an event to request deletion of the scooter
-      this.$emit('delete-scooter', this.scooter);
-    },
+    onDelete() {
+      this.$emit("delete-scooter");
+    }
   },
 }
 </script>

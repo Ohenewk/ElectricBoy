@@ -1,26 +1,24 @@
 <template>
   <HeaderComponent></HeaderComponent>
   <NavBarComponent></NavBarComponent>
-<!--  <WelcomeComponent></WelcomeComponent>-->
-<!--  <ScootersOverview31></ScootersOverview31>-->
-  <ScootersOverview32></ScootersOverview32>
+
+  <router-view></router-view>
 </template>
 
 <script>
-// import WelcomeComponent from "@/components/WelcomeComponent";
+import WelcomeComponent from "@/components/WelcomeComponent";
 import HeaderComponent from "@/components/HeaderComponent";
 import NavBarComponent from "@/components/NavBarComponent";
-// import ScootersOverview31 from "@/components/ScootersOverview31";
 import ScootersOverview32 from "@/components/scooters/ScootersOverview32";
 
 export default {
-  name: "AppComponent31",
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: "AppComponent33",
   components: {
-    ScootersOverview32,
-    // ScootersOverview31,
+    WelcomeComponent,
     NavBarComponent,
     HeaderComponent,
-    // WelcomeComponent
+    ScootersOverview32
   }
 }
 </script>
