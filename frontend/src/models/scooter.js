@@ -25,5 +25,23 @@ export class Scooter {
 
         return new Scooter(pId, randomTag, randomStatus, gpsLocation, randomTotalMileage, randomBatteryCharge);
     }
+
+    static copyConstructor(scooter) {
+        if (scooter === null || scooter === undefined) return null;
+        return Object.assign(new Scooter(0), scooter);
+    }
+
+    equals(other) {
+        if (other === null || other === undefined) {
+            return false;
+        }
+        return (
+            this.tag === other.tag &&
+            this.status === other.status &&
+            this.mileage === other.mileage &&
+            this.batteryCharge === other.batteryCharge &&
+            JSON.stringify(this.gpsLocation) === JSON.stringify(other.gpsLocation)
+        );
+    }
 }
 

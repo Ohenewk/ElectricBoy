@@ -17,7 +17,7 @@
         <td>{{ scooter.id }}</td>
         <td>{{ scooter.tag }}</td>
         <td>{{ scooter.status }}</td>
-        <td v-if="scooter.status !== 'INUSE'">{{ scooter.gpsLocation.latitude }}, {{ scooter.gpsLocation.longitude }}</td>
+        <td v-if="scooter.status !== 'INUSE'">{{ getGpsLocationString(scooter.gpsLocation) }}</td>
         <td v-else>-</td>
         <td>{{ scooter.mileage }}</td>
         <td>{{ scooter.batteryCharge }}%</td>
@@ -40,6 +40,10 @@ export default {
     };
   },
   methods: {
+    getGpsLocationString(gpsLocation) {
+      return gpsLocation ? `${gpsLocation.latitude}, ${gpsLocation.longitude}` : '-';
+      // return gpsLocation ? gpsLocation.latitude + ', ' + gpsLocation.longitude : '-';
+    },
     onNewScooter() {
       const scooter = Scooter.createSampleScooter(this.nextScooterId);
       this.scooterList.push(scooter);

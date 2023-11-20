@@ -18,8 +18,13 @@
         <button class="btn btn-primary mt-3" @click="onNewScooter">New Scooter</button>
       </div>
       <div class="col-md-8">
-        <scooters-detail32 :scooter="selectedScooter" @update-scooter="updateSelectedScooter"  @delete-scooter="deleteScooter"></scooters-detail32>
+        <ScootersDetail32 v-if="this.selectedScooter" :selected-scooter="this.selectedScooter"
+                          @delete-scooter="onDeleteScooter"></ScootersDetail32>
+        <div class="col" v-else>
+          <h4>Please select a scooter</h4>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -27,7 +32,6 @@
 <script>
 import {Scooter} from "@/models/scooter";
 import ScootersDetail32 from "@/components/scooters/ScootersDetail32";
-
 
 export default {
   name: "ScootersOverview32",
@@ -55,25 +59,17 @@ export default {
         this.selectedScooter = scooter; // Select the clicked scooter
       }
     },
-    updateSelectedScooter(newScooter) {
-      this.selectedScooter = newScooter;
-    },
-    deleteScooter(scooterToDelete) {
-      // Remove the scooter from the list using the .filter() method
-      this.scooterList = this.scooterList.filter((scooter) => scooter !== scooterToDelete);
-
-      // Unselect the deleted scooter
-      if (this.selectedScooter === scooterToDelete) {
-        this.selectedScooter = null;
-      }
-    },
+    onDeleteScooter() {
+      this.scooterList = this.scooterList.filter(scooter => scooter.id !== this.selectedScooter.id);
+      this.selectedScooter = null;
+    }
   },
   created() {
     // Create initial scooters
     for (let i = 0; i < 8; i++) {
       const scooter = Scooter.createSampleScooter(this.nextScooterId);
       this.scooterList.push(scooter);
-      this.nextScooterId += Math.floor(Math.random() * 3) + 1; // Randomly increment the ID
+      this.nextScooterId += Math.floor(Math.random() * 3) + 1;
     }
   },
 }

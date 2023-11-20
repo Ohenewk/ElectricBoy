@@ -4,6 +4,8 @@ import App33 from "./AppComponent33.vue";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap";
 import "./main.css"
-import { router } from "@/router";
+import VueQrcodeReader from "vue3-qrcode-reader";
+import {router} from "@/router";
 
-createApp(App33).use(router).mount('#app');
+
+createApp(App33).use(router, VueQrcodeReader).mount('#app');

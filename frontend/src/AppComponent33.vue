@@ -11,14 +11,14 @@ import HeaderComponent from "@/components/HeaderComponent";
 import NavBarComponent from "@/components/NavBarComponent";
 import ScootersOverview32 from "@/components/scooters/ScootersOverview32";
 
+
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   name: "AppComponent33",
   components: {
     WelcomeComponent,
     NavBarComponent,
     HeaderComponent,
-    ScootersOverview32
+    ScootersOverview32,
   }
 }
 </script>

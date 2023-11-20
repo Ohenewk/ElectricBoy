@@ -10,9 +10,7 @@
         <div class="form-group">
           <label for="status">Status:</label>
           <select class="form-control" id="status" v-model="selectedScooter.status">
-            <option value="AVAILABLE">Available</option>
-            <option value="INUSE">In Use</option>
-            <!-- Add more options as needed -->
+            <option v-for="status in ScooterStatus" :key="status" :value="status">{{ status }}</option>
           </select>
         </div>
         <div class="form-group" v-if="selectedScooter.status !== 'INUSE'">
@@ -29,7 +27,7 @@
           <input type="number" class="form-control" id="batteryCharge" v-model="selectedScooter.batteryCharge"/>
         </div>
       </form>
-      <button class="btn btn-danger mt-3" type="button" @click="onDelete">Delete</button>
+      <button class="btn btn-danger mt-3" type="button" @click="$emit('delete-scooter')">Delete</button>
     </div>
     <div v-else>
       <p>Select a scooter to view details.</p>
@@ -38,6 +36,9 @@
 </template>
 
 <script>
+// import {Scooter} from "@/models/scooter";
+
+import {Scooter} from "@/models/scooter";
 
 export default {
   name: "ScootersDetail32",
@@ -47,11 +48,11 @@ export default {
   emits: [
     "delete-scooter"
   ],
-  methods: {
-    onDelete() {
-      this.$emit("delete-scooter");
+  data() {
+    return {
+      ScooterStatus: Scooter.ScooterStatus,
     }
-  },
+  }
 }
 </script>
 
