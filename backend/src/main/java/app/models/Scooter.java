@@ -2,13 +2,18 @@ package app.models;
 
 import app.models.enums.Status;
 import app.utils.RandomDataHelper;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class Scooter {
+    @JsonView(ViewClasses.Shallow.class)
     private long id;
+    @JsonView(ViewClasses.Shallow.class)
     private String tag;
+    @JsonView(ViewClasses.Shallow.class)
     private Status status;
     private String gpsLocation;
     private int mileage;
+    @JsonView(ViewClasses.Shallow.class)
     private int batteryCharge;
 
     public Scooter(long id, String tag, Status status, String gpsLocation, int mileage, int batteryCharge) {
@@ -39,6 +44,10 @@ public class Scooter {
         this(id, "tag");
     }
 
+    public Scooter() {
+        this(RandomDataHelper.getRandom().nextInt(35000, 36000));
+    }
+
     public static Scooter createSampleScooter(long id) {
         return new Scooter(
                 id,
@@ -48,6 +57,24 @@ public class Scooter {
                 RandomDataHelper.getRandom().nextInt(1000, 10000),
                 RandomDataHelper.getRandom().nextInt(5, 100)
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Scooter{" +
+                "id=" + id +
+                ", tag='" + tag + '\'' +
+                ", status=" + status +
+                ", gpsLocation='" + gpsLocation + '\'' +
+                ", mileage=" + mileage +
+                ", batteryCharge=" + batteryCharge +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Scooter scooter)) return false;
+        return id == scooter.id;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -75,5 +102,34 @@ public class Scooter {
 
     public int getBatteryCharge() {
         return batteryCharge;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Setters
+    // -----------------------------------------------------------------------------------------------------------------
+
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setGpsLocation(String gpsLocation) {
+        this.gpsLocation = gpsLocation;
+    }
+
+    public void setMileage(int mileage) {
+        this.mileage = mileage;
+    }
+
+    public void setBatteryCharge(int batteryCharge) {
+        this.batteryCharge = batteryCharge;
     }
 }
