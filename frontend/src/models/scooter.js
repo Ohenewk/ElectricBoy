@@ -14,6 +14,20 @@ export class Scooter {
         this.batteryCharge = batteryCharge;
     }
 
+    equals(other) {
+        if (other === null || other === undefined) {
+            return false;
+        }
+        return (
+            this.id === other.id &&
+            this.tag === other.tag &&
+            this.status === other.status &&
+            this.mileage === other.mileage &&
+            this.batteryCharge === other.batteryCharge &&
+            JSON.stringify(this.gpsLocation) === JSON.stringify(other.gpsLocation)
+        );
+    }
+
     static createSampleScooter(pId = 0) {
         const randomTag = Math.random().toString(36).substring(2, 10);
         const randomStatus = this.ScooterStatus[Math.floor(Math.random() * this.ScooterStatus.length)];
@@ -27,21 +41,32 @@ export class Scooter {
     }
 
     static copyConstructor(scooter) {
-        if (scooter === null || scooter === undefined) return null;
+        if (scooter === null || scooter === undefined) {
+            return null;
+        }
+
         return Object.assign(new Scooter(0), scooter);
     }
 
-    equals(other) {
-        if (other === null || other === undefined) {
-            return false;
-        }
-        return (
-            this.tag === other.tag &&
-            this.status === other.status &&
-            this.mileage === other.mileage &&
-            this.batteryCharge === other.batteryCharge &&
-            JSON.stringify(this.gpsLocation) === JSON.stringify(other.gpsLocation)
-        );
+    toRawJson() {
+        return {
+            id: this.id,
+            tag: this.tag,
+            status: this.status,
+            gpsLocation: this.gpsLocation,
+            mileage: this.mileage,
+            batteryCharge: this.batteryCharge
+        };
+    }
+
+    toSafeJson() {
+        let safe = this.toRawJson();
+        safe.gpsLocation = `${this.gpsLocation.latitude},${this.gpsLocation.longitude}`;
+        return safe;
+    }
+
+    toStringJson() {
+        return JSON.stringify(this.toSafeJson());
     }
 }
 

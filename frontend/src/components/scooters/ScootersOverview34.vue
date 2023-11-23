@@ -26,13 +26,13 @@
 </template>
 
 <script>
-import ScootersDetail32 from "@/components/scooters/ScootersDetail32";
+import ScootersDetail34 from "@/components/scooters/ScootersDetail32";
 import {Scooter} from "@/models/scooter";
 
 export default {
-  name: "ScootersOverview33",
+  name: "ScootersOverview34",
   components: {
-    ScootersDetail32,
+    ScootersDetail34,
   },
   data() {
     return {

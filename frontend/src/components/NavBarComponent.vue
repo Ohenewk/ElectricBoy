@@ -27,6 +27,9 @@
                   <li>
                     <router-link class="dropdown-item" to="/scooters/overview34">Scooters Overview (34)</router-link>
                   </li>
+                  <li>
+                    <router-link class="dropdown-item" to="/scooters/overview37">Scooters Overview (37)</router-link>
+                  </li>
                 </ul>
               </li>
               <li>

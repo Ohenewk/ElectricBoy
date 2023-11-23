@@ -3,10 +3,14 @@ import WelcomeComponent from "@/components/WelcomeComponent";
 import ScootersOverview31 from "@/components/scooters/ScootersOverview31";
 import ScootersOverview32 from "@/components/scooters/ScootersOverview32";
 import ScootersOverview33 from "@/components/scooters/ScootersOverview33";
-import ScootersDetail32 from "@/components/scooters/ScootersDetail32";
-import UnknownRoute from "@/components/UnknownRoute";
 import ScootersOverview34 from "@/components/scooters/ScootersOverview34";
+import ScootersOverview37 from "@/components/scooters/ScootersOverview37";
+import ScootersDetail32 from "@/components/scooters/ScootersDetail32";
 import ScootersDetail34 from "@/components/scooters/ScootersDetail34";
+import ScootersDetail37 from "@/components/scooters/ScootersDetail37";
+import UnknownRoute from "@/components/UnknownRoute";
+
+
 
 
 const routes = [
@@ -20,6 +24,10 @@ const routes = [
     },
     {path: '/scooters/overview34', name: 'Overview34', component: ScootersOverview34, children: [
             {path: ':id', component: ScootersDetail34}
+        ],
+    },
+    {path: '/scooters/overview37', name: 'Overview37', component: ScootersOverview37, children: [
+            {path: ':id', component: ScootersDetail37}
         ],
     },
     {path: '/:pathMatch(.*)*', component: UnknownRoute}, // Catch-all route for unknown routes
