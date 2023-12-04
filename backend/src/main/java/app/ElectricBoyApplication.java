@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -33,8 +32,7 @@ public class ElectricBoyApplication implements CommandLineRunner {
 		System.out.println("Couldn't find scooters. Creating initial scooter data...");
 
 		for (int i = 0; i < 11; i++) {
-			Scooter scooter = Scooter.createSampleScooter(0);
-			Scooter savedScooter = scooterRepository.save(scooter);
+			Scooter savedScooter = scooterRepository.save(Scooter.createSampleScooter(0));
 
 			scooters.add(savedScooter);
 			System.out.printf("Saved scooter: %s\n", savedScooter);
@@ -53,6 +51,7 @@ public class ElectricBoyApplication implements CommandLineRunner {
 			// add random amount of trips
 			for (int index = 0; index < RandomDataHelper.getRandom().nextInt(scooters.size()); index++) {
 				Trip trip = Trip.createSampleTripForScooter(scooter);
+
 				boolean success = scooter.associateTrip(trip);
 				if (success) {
 					Trip savedTrip = tripsRepository.save(trip);

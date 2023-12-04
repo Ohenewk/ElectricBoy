@@ -1,14 +1,13 @@
 package app.repositories;
 
+import app.models.Scooter;
 import app.models.Trip;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
 
 @Primary
 @Repository
@@ -47,5 +46,17 @@ public class TripsRepositoryJpa implements EntityRepository<Trip> {
         Trip trip = findById(id);
         em.remove(trip);
         return trip;
+    }
+
+    @Override
+    public List<Trip> findByQuery(String jpqlName, Object... params) {
+        TypedQuery<Trip> query = em.createNamedQuery(jpqlName, Trip.class);
+
+        // apply parameters to query
+        for (int paramPosition = 0; paramPosition < params.length; paramPosition++) {
+            query.setParameter(paramPosition + 1, params[paramPosition]);
+        }
+
+        return query.getResultList();
     }
 }

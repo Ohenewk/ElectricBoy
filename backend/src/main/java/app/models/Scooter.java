@@ -10,6 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Scooter.find_by_status",
+                query = "SELECT scooter FROM Scooter scooter WHERE scooter.status = ?1"),
+        @NamedQuery(name = "Scooter.find_by_battery",
+                query = "SELECT scooter FROM Scooter scooter WHERE scooter.batteryCharge < ?1"),
+})
 public class Scooter {
 
     public enum Status {
@@ -76,6 +82,7 @@ public class Scooter {
 
         return trips.remove(trip);
     }
+
     // -----------------------------------------------------------------------------------------------------------------
     @Override
     public String toString() {

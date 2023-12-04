@@ -62,4 +62,9 @@ public class ScootersRepositoryMock implements EntityRepository<Scooter> {
         boolean removed = scooterList.remove(scooter);
         return removed ? scooter : null;
     }
+
+    @Override
+    public List<Scooter> findByQuery(String jpqlName, Object... params) {
+        return null;
+    }
 }

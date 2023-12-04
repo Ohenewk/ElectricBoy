@@ -5,18 +5,37 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Trip.find_by_scooterId_and_period",
+                query = """
+                        SELECT trip FROM Trip trip
+                        WHERE (trip.scooter.id = ?1 AND ?2 BETWEEN trip.startDT AND trip.endDT)
+                        """),
+        @NamedQuery(name = "Trip.find_by_scooterId_between_periods",
+                query = """
+                        SELECT trip FROM Trip trip
+                                WHERE (
+                                    trip.scooter.id = ?1 
+                                    AND trip.startDT BETWEEN ?2 AND ?3
+                                    AND trip.endDT BETWEEN ?2 AND ?3
+                                    )
+                        """)
+})
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @DateTimeFormat
     @CreationTimestamp(source = SourceType.DB)
     private LocalDateTime startDT;
-    @UpdateTimestamp(source = SourceType.DB)
+
+    @DateTimeFormat
     private LocalDateTime endDT;
 
     private String startLocation, endLocation;
@@ -32,9 +51,15 @@ public class Trip {
         // empty constructor mandatory
     }
 
+    public Trip(LocalDateTime endDT) {
+        this.endDT = endDT;
+    }
+
     public static Trip createSampleTripForScooter(Scooter scooter) {
-        // TODO:
-        return new Trip();
+        // TODO: implement further
+        final LocalDateTime endDT = LocalDateTime.now().plusDays(10);
+        System.out.println(endDT);
+        return new Trip(endDT);
     }
 
     public boolean associateScooter(Scooter scooter) {

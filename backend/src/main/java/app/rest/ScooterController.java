@@ -7,13 +7,17 @@ import app.models.Trip;
 import app.models.ViewClasses;
 import app.repositories.EntityRepository;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.Enumerated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @JsonView(ViewClasses.Summary.class)
 @RestController
@@ -26,11 +30,29 @@ public class ScooterController {
     @Autowired
     private EntityRepository<Trip> tripsRepository;
 
-    @GetMapping(path = "")
-    public List<Scooter> getAll() {
-        return scootersRepository.findAll();
+    private Scooter.Status stringToStatus(String value) {
+        return Scooter.Status.valueOf(value.toUpperCase());
     }
 
+
+    @GetMapping(path = "")
+    public ResponseEntity<?> getAll(@RequestParam Optional<Integer> battery,
+                                    @RequestParam Optional<String> status) {
+        if (battery.isPresent() && status.isPresent()) {
+            return (ResponseEntity<?>) ResponseEntity.badRequest();
+        }
+
+        List<Scooter> queriedScooters;
+        if (battery.isPresent()) {
+            queriedScooters = scootersRepository.findByQuery("Scooter.find_by_battery", battery.get());
+        } else if (status.isPresent()) {
+            queriedScooters = scootersRepository.findByQuery("Scooter.find_by_status", stringToStatus(status.get()));
+        } else {
+            queriedScooters = scootersRepository.findAll();
+        }
+
+        return ResponseEntity.ok(queriedScooters);
+    }
 
     @JsonView(ViewClasses.Summary.class)
     @GetMapping(path = "/summary")
@@ -92,12 +114,19 @@ public class ScooterController {
 
     // trips
     @GetMapping(path = "/{id}/trips")
-    public List<Trip> getScooterTripsById(@PathVariable("id") long id) throws ResourceNotFound {
+    public List<Trip> getScooterTripsById(@PathVariable("id") long id,
+                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
+                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> to
+    ) throws ResourceNotFound {
         final Scooter scooter = scootersRepository.findById(id);
         if (scooter == null) {
             throw new ResourceNotFound(id);
         }
 
+
+        if (from.isPresent() && to.isPresent()) {
+            return tripsRepository.findByQuery("Trip.find_by_scooterId_between_periods", id, from.get(), to.get());
+        }
         return scooter.getTrips();
     }
 
@@ -125,5 +154,12 @@ public class ScooterController {
                 .buildAndExpand(scooter.getId())
                 .toUri();
         return ResponseEntity.created(location).body(scootersRepository.save(scooter));
+    }
+
+    @GetMapping(path = "/{scooterId}/trips/{period}")
+    public List<Trip> getScooterByIdAndPeriod(@PathVariable("scooterId") long scooterId,
+                                              @PathVariable("period") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                              LocalDateTime period) {
+        return tripsRepository.findByQuery("Trip.find_by_scooterId_and_period", scooterId, period);
     }
 }
