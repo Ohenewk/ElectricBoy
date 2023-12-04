@@ -1,15 +1,26 @@
 package app.models;
 
-import app.models.enums.Status;
 import app.utils.RandomDataHelper;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.*;
 
+@Entity
 public class Scooter {
+
+    public enum Status {
+        IDLE,
+        INUSE,
+        MAINTENANCE
+    }
+
     @JsonView(ViewClasses.Shallow.class)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @JsonView(ViewClasses.Shallow.class)
     private String tag;
     @JsonView(ViewClasses.Shallow.class)
+    @Enumerated(EnumType.STRING)
     private Status status;
     private String gpsLocation;
     private int mileage;
@@ -25,27 +36,8 @@ public class Scooter {
         this.batteryCharge = batteryCharge;
     }
 
-    public Scooter(long id, String tag) {
-        this(
-                id,
-                tag,
-                Status.values()[RandomDataHelper.getRandom().nextInt(Status.values().length)],
-                RandomDataHelper.gpsLocation(),
-                RandomDataHelper.getRandom().nextInt(1000, 10000),
-                RandomDataHelper.getRandom().nextInt(5, 100)
-        );
-    }
-
-    public Scooter(String tag) {
-        this(RandomDataHelper.getRandom().nextInt(35000, 36000), tag);
-    }
-
-    public Scooter(long id) {
-        this(id, "tag");
-    }
-
     public Scooter() {
-        this(RandomDataHelper.getRandom().nextInt(35000, 36000));
+        // empty constructor mandatory
     }
 
     public static Scooter createSampleScooter(long id) {
@@ -107,8 +99,6 @@ public class Scooter {
     // -----------------------------------------------------------------------------------------------------------------
     // Setters
     // -----------------------------------------------------------------------------------------------------------------
-
-
     public void setId(long id) {
         this.id = id;
     }

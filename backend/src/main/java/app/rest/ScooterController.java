@@ -4,8 +4,7 @@ import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.Scooter;
 import app.models.ViewClasses;
-import app.repositories.ScootersRepository;
-import app.utils.RandomDataHelper;
+import app.repositories.EntityRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +20,10 @@ import java.util.List;
 public class ScooterController {
 
     @Autowired
-    private ScootersRepository scootersRepository;
+    private EntityRepository<Scooter> scootersRepository;
 
-    @GetMapping(path="")
-    public List<Scooter> getTestScooters() {
+    @GetMapping(path = "")
+    public List<Scooter> getAll() {
         return scootersRepository.findAll();
     }
 
@@ -48,9 +47,7 @@ public class ScooterController {
     @PostMapping(path = "", produces = "application/json")
     public ResponseEntity<Scooter> addScooter(@RequestBody Scooter scooter) throws Exception {
         if (scootersRepository.findById(scooter.getId()) != null) {
-            throw new Exception("add");
-        } else if (scooter.getId() == 0) {
-            scooter.setId(RandomDataHelper.getRandom().nextInt(36_000, 37_000));
+            throw new PreConditionFailed(String.format("Scooter with id %d already exists.", scooter.getId()));
         }
 
         URI location = ServletUriComponentsBuilder
