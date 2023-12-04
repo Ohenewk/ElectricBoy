@@ -1,8 +1,13 @@
 package app.models;
 
 import app.utils.RandomDataHelper;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Scooter {
@@ -27,6 +32,10 @@ public class Scooter {
     @JsonView(ViewClasses.Shallow.class)
     private int batteryCharge;
 
+    @OneToMany(mappedBy = "scooter")
+    private final List<Trip> trips = new ArrayList<>();
+
+    // -----------------------------------------------------------------------------------------------------------------
     public Scooter(long id, String tag, Status status, String gpsLocation, int mileage, int batteryCharge) {
         this.id = id;
         this.tag = tag;
@@ -40,6 +49,7 @@ public class Scooter {
         // empty constructor mandatory
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     public static Scooter createSampleScooter(long id) {
         return new Scooter(
                 id,
@@ -51,6 +61,22 @@ public class Scooter {
         );
     }
 
+    public boolean associateTrip(Trip trip) {
+        if (!trips.contains(trip) && trip.associateScooter(this)) {
+            trips.add(trip);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean disassociateTrip(Trip trip) {
+        if (trip.getEndDT() == null) // trip is still busy
+            return false;
+
+        return trips.remove(trip);
+    }
+    // -----------------------------------------------------------------------------------------------------------------
     @Override
     public String toString() {
         return "Scooter{" +
@@ -94,6 +120,10 @@ public class Scooter {
 
     public int getBatteryCharge() {
         return batteryCharge;
+    }
+
+    public List<Trip> getTrips() {
+        return trips;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

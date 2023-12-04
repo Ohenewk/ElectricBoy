@@ -3,6 +3,7 @@ package app.rest;
 import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.Scooter;
+import app.models.Trip;
 import app.models.ViewClasses;
 import app.repositories.EntityRepository;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -22,6 +23,9 @@ public class ScooterController {
     @Autowired
     private EntityRepository<Scooter> scootersRepository;
 
+    @Autowired
+    private EntityRepository<Trip> tripsRepository;
+
     @GetMapping(path = "")
     public List<Scooter> getAll() {
         return scootersRepository.findAll();
@@ -34,6 +38,7 @@ public class ScooterController {
         return scootersRepository.findAll();
     }
 
+    // scooters
     @GetMapping(path = "/{id}")
     public ResponseEntity<Scooter> getScooterById(@PathVariable("id") long id) throws ResourceNotFound {
         final Scooter scooter = scootersRepository.findById(id);
@@ -45,7 +50,7 @@ public class ScooterController {
     }
 
     @PostMapping(path = "", produces = "application/json")
-    public ResponseEntity<Scooter> addScooter(@RequestBody Scooter scooter) throws Exception {
+    public ResponseEntity<Scooter> addScooter(@RequestBody Scooter scooter) throws PreConditionFailed {
         if (scootersRepository.findById(scooter.getId()) != null) {
             throw new PreConditionFailed(String.format("Scooter with id %d already exists.", scooter.getId()));
         }
@@ -83,5 +88,42 @@ public class ScooterController {
             throw new ResourceNotFound(id);
         }
         return ResponseEntity.ok().body(deleted);
+    }
+
+    // trips
+    @GetMapping(path = "/{id}/trips")
+    public List<Trip> getScooterTripsById(@PathVariable("id") long id) throws ResourceNotFound {
+        final Scooter scooter = scootersRepository.findById(id);
+        if (scooter == null) {
+            throw new ResourceNotFound(id);
+        }
+
+        return scooter.getTrips();
+    }
+
+    @PostMapping(path = "/{id}/trips", produces = "application/json")
+    public ResponseEntity<Scooter> addTripToScooter(@PathVariable("id") long id, @RequestBody Trip trip) throws PreConditionFailed {
+        Scooter scooter = scootersRepository.findById(id);
+        if (scooter == null) {
+            throw new PreConditionFailed(String.format("Scooter with id %d doesn't exist!", id));
+        } else if (scooter.getStatus() != Scooter.Status.IDLE) {
+            throw new PreConditionFailed(String.format("Scooter with id %d is not IDLE!", id));
+        } else if (scooter.getBatteryCharge() < 10) {
+            throw new PreConditionFailed(String.format("Scooter with id %d doesn't have enough battery charge (%d < 10).", id, scooter.getBatteryCharge()));
+        }
+
+        trip.setStartLocation(scooter.getGpsLocation());
+        scooter.setStatus(Scooter.Status.INUSE);
+        boolean success = scooter.associateTrip(trip);
+        if (success) {
+            tripsRepository.save(trip);
+        }
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}/trips")
+                .buildAndExpand(scooter.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(scootersRepository.save(scooter));
     }
 }
