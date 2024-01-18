@@ -1,8 +1,6 @@
 package app.models;
 
 import app.utils.RandomDataHelper;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 

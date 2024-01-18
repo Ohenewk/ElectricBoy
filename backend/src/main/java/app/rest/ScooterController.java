@@ -1,5 +1,7 @@
 package app.rest;
 
+import app.exceptions.InvalidCombination;
+import app.exceptions.InvalidStatusException;
 import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.Scooter;
@@ -10,13 +12,16 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Enumerated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @JsonView(ViewClasses.Summary.class)
@@ -30,16 +35,24 @@ public class ScooterController {
     @Autowired
     private EntityRepository<Trip> tripsRepository;
 
-    private Scooter.Status stringToStatus(String value) {
-        return Scooter.Status.valueOf(value.toUpperCase());
+    private Scooter.Status stringToStatus(String status) {
+        switch (status.toLowerCase()) {
+            case "maintenance":
+                return Scooter.Status.MAINTENANCE;
+            case "idle":
+                return Scooter.Status.IDLE;
+            case "inuse":
+                return Scooter.Status.INUSE;
+            default:
+                throw new InvalidStatusException(status);
+        }
     }
-
 
     @GetMapping(path = "")
     public ResponseEntity<?> getAll(@RequestParam Optional<Integer> battery,
                                     @RequestParam Optional<String> status) {
         if (battery.isPresent() && status.isPresent()) {
-            return (ResponseEntity<?>) ResponseEntity.badRequest();
+            throw new InvalidCombination();
         }
 
         List<Scooter> queriedScooters;
